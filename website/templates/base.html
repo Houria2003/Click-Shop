@@ -3,137 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Bootstrap CSS -->
+
+    <!-- Bootstrap CSS (official CDN) -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Font Awesome -->
+
+    <!-- Font Awesome CDN (RECOMMENDED) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <title>Click&Shop | {% block title %} {% endblock %}</title>
+
+    <!-- Your Custom Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <title>Click&Shop | {% block title %}{% endblock %}</title>
 </head>
 <body style="background-color: rgb(124, 14, 151);">
 
-<!-- Navbar Section - Version Frontend Only -->
+<!-- Navbar -->
 <nav class="navbar navbar-expand-lg" style="background-color: white;">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#" style="color: orange; font-size: 30px; margin-right: -2px;">
-        <i class="fa-brands fa-amazon"></i>
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link active" href="/" style="font-family: cursive; font-size: 19px; color: orange;">Click&Shop</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#" style="font-size: 17px;">About Us</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#" style="font-size: 17px;">Contact us</a>
-          </li>
-        </ul>
-  
-        <form class="d-flex" role="search" style="margin-right: 170px;">
-          <input class="form-control me-2" type="search" placeholder="Search">
-          <button class="btn" type="submit" style="color: orange; border-color: orange;">Search</button>
-        </form>
-        
-        <ul class="navbar-nav">
-          <li class="nav-item mx-2">
-            <a class="nav-link" href="/cart" style="color: orange;">
-              <i class="fa-solid fa-cart-shopping" style="color: orange;"></i> Cart
-              <span class="badge bg-success">0</span>
-            </a>
-          </li>
-          
-          <li class="nav-item mx-2">
-            <a class="nav-link" href="#" style="color: orange;">
-              <i class="fa-solid fa-heart" style="color: orange;"></i> Wishlist
-            </a>
-          </li>
-          
-          <li class="nav-item dropdown mx-2">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" style="color: orange;">
-              <i class="fa-solid fa-user" style="color: orange;"></i> Account
-            </a>
-            <ul class="dropdown-menu">
-                <!-- Option Login -->
-                {% if current_user.is_authenticated %}
-              <li><a class="dropdown-item" href="/profile/{{ current_user.id }}">Profile <i class="fa-solid fa-user"></i></a></li>
-              <li><a class="dropdown-item" href="/orders">Orders <i class="fa-solid fa-truck-fast"></i></a></li>
-              <li><a class="dropdown-item" href="/logout">Log Out <i class="fa-solid fa-right-from-bracket"></i></a></li>
+        <a class="navbar-brand" href="#" style="color: orange; font-size: 30px;">
+            <i class="fa-brands fa-amazon"></i>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-              {% else %}
-              
-              <li><a class="dropdown-item" href="/login">Login <i class="fa-solid fa-right-to-bracket"></i></a></li>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link active" href="/" style="font-family: cursive; font-size: 19px; color: orange;">Click&Shop</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Contact us</a></li>
+            </ul>
 
-              {% endif %}
-              </ul>
-          </li>
-        </ul>
-      </div>
+            <form class="d-flex" role="search" action="/search" method="POST" style="margin-right: 170px;">
+                <input class="form-control me-2" type="search" name="search" placeholder="Search">
+                <button class="btn" type="submit">Search</button>
+            </form>
+
+            <ul class="navbar-nav">
+                <li class="nav-item mx-2">
+                    <a class="nav-link" href="/cart" style="color: orange;">
+                        <i class="fa-solid fa-cart-shopping"></i> Cart 
+                        <!-- Badge showing number of items in cart -->
+                        {% if cart | length > 0 %}
+                            <span class="badge bg-success">{{ cart | length }}</span>
+                        {% else %}
+                            <span class="badge bg-success" style="display: none;"></span>
+                        {% endif %}
+                    </a>
+                </li>
+                <li class="nav-item mx-2">
+                    <a class="nav-link" href="#" style="color: orange;">
+                        <i class="fa-solid fa-heart"></i> Wishlist
+                    </a>
+                </li>
+                <li class="nav-item dropdown mx-2">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" style="color: orange;">
+                        <i class="fa-solid fa-user"></i> Account
+                    </a>
+                    <ul class="dropdown-menu">
+                        {% if current_user.is_authenticated %}
+                            <li><a class="dropdown-item" href="/profile/{{ current_user.id }}">Profile <i class="fa-solid fa-user"></i></a></li>
+                            <li><a class="dropdown-item" href="/orders">Orders <i class="fa-solid fa-truck-fast"></i></a></li>
+                            <li><a class="dropdown-item" href="/logout">Log Out <i class="fa-solid fa-right-from-bracket"></i></a></li>
+                        {% else %}
+                            <li><a class="dropdown-item" href="/login">Login <i class="fa-solid fa-right-to-bracket"></i></a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+            </ul>
+        </div>
     </div>
-  </nav>
+</nav>
 
-  <style>
-    /* Styles pour les effets hover */
-    .nav-link:hover {
-      color: orange !important;
-    }
-    .dropdown-item:hover {
-      color: orange !important;
+<!-- Flash messages -->
+{% for message in get_flashed_messages() %}
+<div class="alert alert-success alert-dismissible fade show m-2" role="alert">
+    <strong>{{ message }}</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{% endfor %}
+
+<!-- Hover style -->
+<style>
+    .nav-link:hover, .dropdown-item:hover {
+        color: orange !important;
     }
     .btn:hover {
-      background-color: orange;
-      color: white !important;
+        background-color: orange;
+        color: white !important;
     }
-  </style>
+</style>
 
-  {% for message in get_flashed_messages() %}
+<!-- Page content -->
+{% block body %}{% endblock %}
+<div class="container my-5">
+    {% block content %}{% endblock %}
+</div>
 
-  <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 5px;">
-      <strong>{{ message }}</strong>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  
-  </div>
-  {% endfor %}
+<!-- Footer -->
+<footer class="container-fluid text-center p-2 mt-5" style="background-color: orange; color: white;">
+    <a href="https://github.com/Houria2003?tab=repositories" style="color: white;">Click&Shop</a> | 
+    <span><i class="fa-regular fa-copyright"></i></span> 
+    2023 All rights reserved
+</footer>
 
-  {% block body %}
-
-
-  {% endblock %}
-
-
-  <footer class="container-fluid  text-center p-2 mt-5" style="background-color: orange; color: white;">
-    <a href="https://github.com/Houria2003?tab=repositories" style="color: white;">Click&Shop</a> | <span>
-      <i class="fa-sharp fa-regular fa-copyright"></i></span> 2023 All rights reserved
-
-  </footer>
-  
-
-  <script src="{{ url_for( 'static', filename='js/owl.carousel.min.js') }}"></script>
-    <script src="{{ url_for( 'static', filename='js/all.min.js') }}"></script>
-    <script src="{{ url_for( 'static', filename='js/jquery.js') }}"></script>
-
-    <script src="{{ url_for( 'static', filename='js/myScript.js') }}"></script>
-
-  
-
-
-    <!-- Main Content -->
-    <div class="container my-5">
-        {% block content %}
-        <!-- Your page content goes here -->
-        {% endblock %}
-    </div>
-
-    
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap + Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+<script src="{{ url_for('static', filename='js/myScript.js') }}"></script>
 </body>
 </html>
